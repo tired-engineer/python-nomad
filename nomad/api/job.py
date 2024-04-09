@@ -245,7 +245,7 @@ class Job(Requester):
         """
         return self.request(id_, "periodic", "force", method="post").json()
 
-    def dispatch_job(self, id_, payload=None, meta=None):
+    def dispatch_job(self, id_, payload=None, meta=None, idempotency_token=None):
         """Dispatches a new instance of a parameterized job.
 
         https://www.nomadproject.io/docs/http/job.html
@@ -254,12 +254,13 @@ class Job(Requester):
           - id_
           - payload
           - meta
+          - idempotency_token
         returns: dict
         raises:
           - nomad.api.exceptions.BaseNomadException
           - nomad.api.exceptions.URLNotFoundNomadException
         """
-        dispatch_json = {"Meta": meta, "Payload": payload}
+        dispatch_json = {"Meta": meta, "Payload": payload, "IdempotencyToken": idempotency_token}
         return self.request(id_, "dispatch", json=dispatch_json, method="post").json()
 
     def revert_job(self, id_, version, enforce_prior_version=None):

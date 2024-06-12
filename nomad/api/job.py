@@ -245,7 +245,7 @@ class Job(Requester):
         """
         return self.request(id_, "periodic", "force", method="post").json()
 
-    def dispatch_job(self, id_, payload=None, meta=None, idempotency_token=None):
+    def dispatch_job(self, id_, payload=None, meta=None, idempotency_token=None, namespace=None):
         """Dispatches a new instance of a parameterized job.
 
         https://www.nomadproject.io/docs/http/job.html
@@ -261,7 +261,7 @@ class Job(Requester):
           - nomad.api.exceptions.URLNotFoundNomadException
         """
         dispatch_json = {"Meta": meta, "Payload": payload, "IdempotencyToken": idempotency_token}
-        return self.request(id_, "dispatch", json=dispatch_json, method="post").json()
+        return self.request(id_, "dispatch", json=dispatch_json, method="post", params={"namespace": namespace}).json()
 
     def revert_job(self, id_, version, enforce_prior_version=None):
         """This endpoint reverts the job to an older version.
